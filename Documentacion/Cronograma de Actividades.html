@@ -1,0 +1,203 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Cronograma de Actividades</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Schibsted+Grotesk:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: plano de obra. Columna de actividades fija a la izquierda, 13 semanas a la derecha, barras de fase en color y marcador "hoy". */
+:root {
+  --bg: #f3f6f8;
+  --surface: #ffffff;
+  --surface2: #e9eef2;
+  --fg: #14202b;
+  --muted: #566775;
+  --line: #d3dce3;
+  --f1: #1f7a8c;
+  --f2: #5252cc;
+  --f3: #c2410c;
+  --f4: #2b7a54;
+  --fx: #5f6f7d;
+  --on-bar: #ffffff;
+  --today: #d1344a;
+  --display: "Schibsted Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+  --label: min(300px, 46vw);
+  --wk: 40px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e1a22; --surface: #14232d; --surface2: #1b2d39; --fg: #e5edf2; --muted: #93a5b3; --line: #28394548;
+    --f1: #4fb3c6; --f2: #9293f2; --f3: #f28b57; --f4: #5fc08a; --fx: #9aa9b6; --on-bar: #0a141a; --today: #ff6f86;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e1a22; --surface: #14232d; --surface2: #1b2d39; --fg: #e5edf2; --muted: #93a5b3; --line: #28394548;
+  --f1: #4fb3c6; --f2: #9293f2; --f3: #f28b57; --f4: #5fc08a; --fx: #9aa9b6; --on-bar: #0a141a; --today: #ff6f86;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--fg); font-family: var(--display); font-size: 15px; line-height: 1.45;
+  margin: 0; padding-block: 28px 40px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 1180px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0 0 6px; }
+h1 { font-size: clamp(26px, 4.4vw, 38px); line-height: 1.1; margin: 0 0 8px; font-weight: 700; text-wrap: balance; letter-spacing: -.01em; }
+.sub { margin: 0; color: var(--muted); max-width: 70ch; }
+.meta { display: flex; flex-wrap: wrap; gap: 8px 22px; font-family: var(--mono); font-size: 12.5px; color: var(--muted); }
+.meta b { color: var(--fg); font-weight: 500; }
+.legend { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.sw { width: 14px; height: 10px; border-radius: 2px; display: inline-block; }
+.dm { width: 10px; height: 10px; transform: rotate(45deg); background: var(--fg); display: inline-block; }
+.tl { width: 2px; height: 14px; background: var(--today); display: inline-block; }
+.chart { overflow-x: auto; background: var(--surface); border: 1px solid var(--line); border-radius: 10px; }
+.inner { position: relative; min-width: calc(var(--label) + 13 * var(--wk)); }
+.row { display: grid; grid-template-columns: var(--label) 1fr; border-bottom: 1px solid var(--line); min-height: 40px; }
+.row:last-child { border-bottom: 0; }
+.lab { position: sticky; left: 0; z-index: 3; background: var(--surface); padding: 7px 12px 7px 14px; display: flex; flex-direction: column; justify-content: center; min-width: 0; border-right: 1px solid var(--line); }
+.t { font-size: 13.5px; font-weight: 500; overflow-wrap: anywhere; }
+.d { font-family: var(--mono); font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.n { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-right: 6px; font-variant-numeric: tabular-nums; }
+.track { display: grid; grid-template-columns: repeat(13, 1fr); align-items: center; padding-block: 11px;
+  background-image: linear-gradient(to right, var(--line) 1px, transparent 1px); background-size: calc(100% / 13) 100%; }
+.bar { height: 16px; border-radius: 3px; margin-inline: 2px; background: var(--c); }
+.ms { justify-self: start; width: 14px; height: 14px; transform: rotate(45deg); background: var(--c); margin-right: 3px; outline: 2px solid var(--surface); }
+.phase { background: var(--surface2); }
+.phase .lab { background: var(--surface2); }
+.phase .t { font-weight: 700; font-size: 14px; }
+.phase .bar { height: 10px; border-radius: 0; position: relative; }
+.phase .bar::before, .phase .bar::after { content: ""; position: absolute; top: 0; width: 3px; height: 18px; background: var(--c); }
+.phase .bar::before { left: 0; } .phase .bar::after { right: 0; }
+.head { background: var(--surface); }
+.head .lab { justify-content: flex-end; font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; }
+.head .track { padding-block: 0; align-items: stretch; }
+.wkc { text-align: center; padding: 5px 0; font-family: var(--mono); font-size: 10.5px; line-height: 1.25; color: var(--muted); font-variant-numeric: tabular-nums; }
+.wkc b { display: block; color: var(--fg); font-weight: 500; font-size: 11.5px; }
+.f1 { --c: var(--f1); } .f2 { --c: var(--f2); } .f3 { --c: var(--f3); } .f4 { --c: var(--f4); } .fx { --c: var(--fx); }
+.today { position: absolute; top: 0; bottom: 0; width: 2px; background: var(--today); z-index: 2; pointer-events: none;
+  left: calc(var(--label) + (100% - var(--label)) * var(--p)); }
+.today span { position: absolute; top: 2px; left: 5px; font-family: var(--mono); font-size: 10px; color: var(--today); white-space: nowrap; background: var(--surface); padding: 0 3px; }
+.notes { font-size: 13.5px; color: var(--muted); max-width: 80ch; margin: 0; }
+.notes b { color: var(--fg); font-weight: 600; }
+</style>
+
+<div class="wrap">
+  <header>
+    <p class="eyebrow">URBE · Teoría General de Sistemas · Sección N-711</p>
+    <h1>Cronograma de Actividades</h1>
+    <p class="sub">Diagrama de Gantt del proyecto Aplicación Web de Gestión de Tareas y Trabajos para Entornos Académicos, organizado en las cuatro fases del ciclo de vida y los sprints de Scrum.</p>
+  </header>
+
+  <div class="meta">
+    <span>Inicio <b>24/08/2026</b></span>
+    <span>Entrega <b>23/11/2026</b></span>
+    <span>Duración <b>13 semanas</b></span>
+    <span>Fases <b>4</b></span>
+    <span>Actividades <b id="count">0</b></span>
+  </div>
+
+  <div class="legend">
+    <span><i class="sw" style="background:var(--f1)"></i>Fase 1 · Levantamiento</span>
+    <span><i class="sw" style="background:var(--f2)"></i>Fase 2 · Planteamiento y análisis</span>
+    <span><i class="sw" style="background:var(--f3)"></i>Fase 3 · Diseño y entregables</span>
+    <span><i class="sw" style="background:var(--f4)"></i>Fase 4 · Construcción, pruebas y cierre</span>
+    <span><i class="sw" style="background:var(--fx)"></i>Gestión transversal</span>
+    <span><i class="dm"></i>Hito / acta</span>
+    <span><i class="tl"></i>Hoy</span>
+  </div>
+
+  <div class="chart" role="region" aria-label="Diagrama de Gantt" tabindex="0">
+    <div class="inner" id="gantt"></div>
+  </div>
+
+  <p class="notes"><b>Supuestos.</b> El inicio se fijó el lunes 24/08/2026 para que la semana 9 sea la del 19/10. La Fase 2 cerró el miércoles 21/10 y la Fase 3 corre del jueves 22/10 al miércoles 28/10. Las fechas internas de la Fase 2 son estimadas. Las Fases 1 y 4 no tienen listado en lo que me enviaste: la 1 se dejó con el planteamiento inicial y la 4 reúne la construcción por sprints, las pruebas y el cierre, que terminan el 20/11 con entrega el lunes 23/11/2026.</p>
+</div>
+
+<script>
+var START = new Date(2026, 7, 24);
+var WEEKS = 13;
+var DATA = [
+  { cls: "f1", name: "Fase 1 · Levantamiento y planteamiento inicial", s: 1, e: 2, items: [
+    { n: "1.1", t: "Revisión del problema, objetivos y línea de investigación", s: 1, e: 1 },
+    { n: "1.2", t: "Análisis FODA, alcance y exclusiones", s: 1, e: 2 },
+    { n: "1.3", t: "Firma del Acta de Constitución del Proyecto", s: 2, e: 2, ms: true }
+  ]},
+  { cls: "f2", name: "Fase 2 · Planteamiento y análisis del sistema", s: 3, e: 9, d: 2, items: [
+    { n: "2.1", t: "Objetivos del proyecto (mejorados)", s: 3, e: 3 },
+    { n: "2.2", t: "Metas del proyecto según los objetivos específicos", s: 3, e: 4 },
+    { n: "2.3", t: "Requerimientos funcionales y no funcionales", s: 4, e: 6 },
+    { n: "2.4", t: "Restricciones del sistema en todas las áreas", s: 5, e: 6 },
+    { n: "2.5", t: "Factibilidad técnica, operativa, económica y psicosocial", s: 6, e: 7 },
+    { n: "2.6", t: "Cuestionario de recolección de datos y análisis estadístico", s: 6, e: 9, d: 2 },
+    { n: "2.7", t: "Diagrama de carta estructurada o mapa de navegación", s: 8, e: 9, d: 2 },
+    { n: "2.8", t: "Cierre de la Fase 2", s: 9, e: 9, d: 2, ms: true }
+  ]},
+  { cls: "f3", name: "Fase 3 · Diseño y entregables", s: 9, e: 10, d: 2, sd: 3, items: [
+    { n: "3.1", t: "Entregable 1 · Gráfico de Gantt y cronograma de actividades", s: 9, e: 10, d: 2, sd: 3 },
+    { n: "3.2", t: "Entregable 2 · Diagrama PERT-CPM", s: 9, e: 10, d: 2, sd: 3 },
+    { n: "3.3", t: "Entregable 3 · Diseño de la base de datos: diccionario de datos y diagrama Entidad-Relación", s: 9, e: 10, d: 2, sd: 3 },
+    { n: "3.4", t: "Entregable 4 · Diseño de pantallas: inicio de sesión, módulos, procesos clave y 1 reporte", s: 9, e: 10, d: 2, sd: 3 },
+    { n: "3.5", t: "Fecha límite de la Fase 3", s: 10, e: 10, d: 2, ms: true }
+  ]},
+  { cls: "f4", name: "Fase 4 · Construcción, pruebas y cierre", s: 10, e: 13, sd: 3, items: [
+    { n: "4.1", t: "Sprint 1 · Backend: registro y login con tokens (JWT)", s: 10, e: 11, sd: 3 },
+    { n: "4.2", t: "Sprint 2 · CRUD de tareas y lógica de prioridad", s: 11, e: 12 },
+    { n: "4.3", t: "Sprint 3 · Vista de lista y tablero Kanban", s: 11, e: 12 },
+    { n: "4.4", t: "Sprint 4 · Dashboard analítico y notificaciones", s: 12, e: 13, d: 1 },
+    { n: "4.5", t: "Pruebas unitarias, de integración y responsivas", s: 13, e: 13, d: 3 },
+    { n: "4.6", t: "Pruebas de aceptación con usuarios (UAT)", s: 13, e: 13, sd: 2 },
+    { n: "4.7", t: "Informe de pruebas", s: 13, e: 13, sd: 3 },
+    { n: "4.8", t: "Acta de Cierre y entrega final (lunes 23/11)", s: 13, e: 13, ms: true }
+  ]},
+  { cls: "fx", name: "Gestión transversal", s: 1, e: 13, items: [
+    { n: "T.1", t: "Actas de reunión y seguimiento (una por sprint)", s: 1, e: 13 }
+  ]}
+];
+
+function p2(n) { return (n < 10 ? "0" : "") + n; }
+function fmt(d) { return p2(d.getDate()) + "/" + p2(d.getMonth() + 1); }
+function wkStart(w) { return new Date(2026, 7, 24 + (w - 1) * 7); }
+function wkEnd(w, d) { return new Date(2026, 7, 24 + (w - 1) * 7 + (d == null ? 4 : d)); }
+function range(s, e, d, sd) { return fmt(sd ? new Date(2026, 7, 24 + (s - 1) * 7 + sd) : wkStart(s)) + " – " + fmt(wkEnd(e, d)); }
+function bd(s, e, d, sd) { return (e - s) * 5 + (d == null ? 4 : d) - (sd || 0) + 1; }
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;"); }
+
+var html = '<div class="row head"><div class="lab">Actividad</div><div class="track">';
+for (var w = 1; w <= WEEKS; w++) html += '<div class="wkc"><b>S' + w + '</b>' + fmt(wkStart(w)) + '</div>';
+html += '</div></div>';
+
+function barStyle(s, e, d, sd) {
+  var a = (s - 1) + (sd || 0) / 5, b = (e - 1) + ((d == null ? 4 : d) + 1) / 5;
+  return "grid-column:1/-1;justify-self:start;margin-left:calc(" + (a / WEEKS * 100).toFixed(3) + "% + 2px);width:calc(" + ((b - a) / WEEKS * 100).toFixed(3) + "% - 4px)";
+}
+function msStyle(e, d) {
+  var x = (e - 1) + ((d == null ? 4 : d) + 1) / 5;
+  return "grid-column:1/-1;justify-self:start;margin-right:0;margin-left:calc(" + (x / WEEKS * 100).toFixed(3) + "% - 11px)";
+}
+var count = 0;
+DATA.forEach(function (ph) {
+  html += '<div class="row phase ' + ph.cls + '"><div class="lab"><span class="t">' + esc(ph.name) + '</span><span class="d">' + range(ph.s, ph.e, ph.d, ph.sd) + ' · ' + bd(ph.s, ph.e, ph.d, ph.sd) + ' días háb.</span></div>' +
+    '<div class="track"><div class="bar" style="' + barStyle(ph.s, ph.e, ph.d, ph.sd) + '"></div></div></div>';
+  ph.items.forEach(function (it) {
+    count++;
+    var dates = it.ms ? 'Hito · ' + fmt(wkEnd(it.e, it.d)) : range(it.s, it.e, it.d, it.sd) + ' · ' + bd(it.s, it.e, it.d, it.sd) + ' días háb.';
+    var mark = it.ms
+      ? '<div class="ms" style="' + msStyle(it.e, it.d) + '"></div>'
+      : '<div class="bar" style="' + barStyle(it.s, it.e, it.d, it.sd) + '"></div>';
+    html += '<div class="row item ' + ph.cls + '"><div class="lab"><span class="t"><span class="n">' + it.n + '</span>' + esc(it.t) + '</span><span class="d">' + dates + '</span></div>' +
+      '<div class="track">' + mark + '</div></div>';
+  });
+});
+
+var days = (Date.now() - START.getTime()) / 86400000;
+if (days >= 0 && days < WEEKS * 7) {
+  html += '<div class="today" style="--p:' + (days / (WEEKS * 7)).toFixed(4) + '"><span>Hoy ' + fmt(new Date()) + '</span></div>';
+}
+document.getElementById("gantt").innerHTML = html;
+document.getElementById("count").textContent = count;
+</script>
+
+</body></html>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Acceder · Gestión de Tareas Académicas</title>
+
+  <link rel="stylesheet" href="css/base.css">
+  <link rel="stylesheet" href="css/auth.css">
+
+  <script>
+    // Guard de sesión: si ya hay token, directo a la app.
+    if (localStorage.getItem("access_token")) location.replace("app.html");
+
+    // Tema antes del primer paint (evita flash blanco→oscuro).
+    (function () {
+      const t = localStorage.getItem("theme")
+        || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.dataset.theme = t;
+    })();
+  </script>
+</head>
+<body>
+
+  <main class="auth-layout">
+
+    <!-- ─── Aside: branding editorial ─────────────────────── -->
+    <aside class="auth-aside">
+      <div class="auth-brand">
+        <span class="brand-name">tareas<span class="brand-dot">.</span>académicas</span>
+      </div>
+
+      <blockquote class="auth-quote">
+        <p>«El orden no es un lujo. Es la forma en que un estudiante recupera el control de su semana.»</p>
+        <footer>— Cuaderno de TGS · 2026</footer>
+      </blockquote>
+
+      <ul class="auth-features">
+        <li>Centralizá tus asignaciones en un solo lugar</li>
+        <li>Tablero Kanban para mover tus entregas</li>
+        <li>Métricas de productividad semana a semana</li>
+      </ul>
+    </aside>
+
+    <!-- ─── Panel: formularios ────────────────────────────── -->
+    <section class="auth-panel">
+
+      <button class="theme-toggle" data-theme-toggle
+              aria-label="Cambiar tema" title="Cambiar tema">
+        <span data-theme-icon>◐</span>
+      </button>
+
+      <div class="auth-card">
+
+        <header class="auth-header">
+          <h1 class="auth-title">Accedé a tu cuenta</h1>
+          <p class="auth-subtitle">Organizá tus entregas antes de que te alcancen.</p>
+        </header>
+
+        <div class="auth-tabs" role="tablist" aria-label="Acceso">
+          <button role="tab" class="auth-tab is-active" data-tab="login" aria-selected="true">
+            Iniciar sesión
+          </button>
+          <button role="tab" class="auth-tab" data-tab="registro" aria-selected="false">
+            Crear cuenta
+          </button>
+        </div>
+
+        <!-- Panel: Login -->
+        <div class="auth-form" data-form-panel="login">
+          <form data-form="login" method="post" onsubmit="return false" novalidate>
+            <div class="field">
+              <label for="login-email">Correo</label>
+              <input id="login-email" name="email" type="email"
+                     autocomplete="email" required
+                     placeholder="ana@urbe.edu" spellcheck="false">
+            </div>
+            <div class="field">
+              <label for="login-password">Contraseña</label>
+              <input id="login-password" name="password" type="password"
+                     autocomplete="current-password" required
+                     placeholder="••••••••">
+            </div>
+            <p class="form-error" data-error-for="login" hidden></p>
+            <button type="submit" class="btn btn-primary btn-block">Entrar</button>
+          </form>
+        </div>
+
+        <!-- Panel: Registro -->
+        <div class="auth-form" data-form-panel="registro" hidden>
+          <form data-form="registro" method="post" onsubmit="return false" novalidate>
+            <div class="field">
+              <label for="reg-nombre">Nombre completo</label>
+              <input id="reg-nombre" name="nombre" type="text"
+                     autocomplete="name" required minlength="2" maxlength="100"
+                     placeholder="Ana Pérez">
+            </div>
+            <div class="field">
+              <label for="reg-email">Correo</label>
+              <input id="reg-email" name="email" type="email"
+                     autocomplete="email" required
+                     placeholder="ana@urbe.edu" spellcheck="false">
+            </div>
+            <div class="field">
+              <label for="reg-password">Contraseña</label>
+              <input id="reg-password" name="password" type="password"
+                     autocomplete="new-password" required minlength="8" maxlength="128"
+                     placeholder="Mínimo 8 caracteres">
+            </div>
+            <p class="form-error" data-error-for="registro" hidden></p>
+            <button type="submit" class="btn btn-primary btn-block">Crear cuenta</button>
+          </form>
+        </div>
+
+      </div>
+
+      <p class="auth-footer">
+        Proyecto de <strong>Teoría General de Sistemas</strong> · URBE · Sección N-711
+      </p>
+    </section>
+
+  </main>
+
+  <script type="module" src="js/auth.js"></script>
+</body>
+</html>

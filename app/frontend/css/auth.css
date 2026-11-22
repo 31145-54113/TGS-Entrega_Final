@@ -1,0 +1,137 @@
+/* ==========================================================================
+   auth.css — Login y registro
+   ========================================================================== */
+
+.auth-layout {
+  min-height: 100dvh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ─── Aside editorial (izquierda) ──────────────────────────────────────── */
+.auth-aside {
+  padding: 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 2rem;
+  background: var(--surface-2);
+  border-right: 1px solid var(--border);
+}
+
+.auth-brand { margin-bottom: auto; }
+
+.auth-quote {
+  max-width: 34ch;
+  font-size: 1.375rem;
+  line-height: 1.35;
+  font-weight: 500;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  border-left: 2px solid var(--accent);
+  padding-left: 1rem;
+}
+.auth-quote footer {
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.auth-features {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+.auth-features li::before {
+  content: "→";
+  color: var(--accent);
+  margin-right: 0.5rem;
+}
+
+/* ─── Panel de formularios (derecha) ───────────────────────────────────── */
+.auth-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1.5rem;
+}
+
+.auth-panel > .theme-toggle {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 360px;
+}
+
+.auth-header {
+  margin-bottom: 1.75rem;
+}
+.auth-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--text);
+}
+.auth-subtitle {
+  margin-top: 0.375rem;
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* ─── Tabs ─────────────────────────────────────────────────────────────── */
+.auth-tabs {
+  display: flex;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  margin-bottom: 1.5rem;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+.auth-tab {
+  flex: 1;
+  height: 32px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  transition: background-color 150ms ease, color 150ms ease;
+}
+.auth-tab:hover { color: var(--text); }
+.auth-tab.is-active {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+}
+
+/* ─── Footer ───────────────────────────────────────────────────────────── */
+.auth-footer {
+  margin-top: 2rem;
+  font-size: 0.75rem;
+  color: var(--text-dim);
+  text-align: center;
+  max-width: 360px;
+}
+.auth-footer strong {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ─── Responsive ───────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+  .auth-layout { grid-template-columns: 1fr; }
+  .auth-aside  { display: none; }
+  .auth-panel  { min-height: 100dvh; }
+}

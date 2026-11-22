@@ -1,0 +1,43 @@
+# ─── Python ─────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.egg-info/
+build/
+dist/
+
+# ─── Entornos virtuales ─────────────────────
+.venv/
+venv/
+env/
+
+# ─── Base de datos (WAL incluido) ───────────
+data/
+*.db
+*.db-wal
+*.db-shm
+*.db.bak
+*.sqlite
+*.sqlite3
+
+# ─── Entorno ────────────────────────────────
+.env
+.env.*
+!.env.example
+
+# ─── Caches de herramientas ─────────────────
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ─── IDE / OS ───────────────────────────────
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# ─── Logs ───────────────────────────────────
+*.log
